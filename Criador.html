@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <title>Lithium Site De Criação</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'VT323', monospace;
+      margin: 0;
+      padding: 0;
+      background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      color: #556B2F;
+      text-align: center;
+      border-bottom: 2px solid #556B2F;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-size: 20px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 6px;
+      font-size: 18px;
+      background: #1e1e1e;
+      border: 1px solid #556B2F;
+      border-radius: 1px;
+      color: #f0f0f0;
+    }
+    button {
+      margin-top: 30px;
+      padding: 12px 20px;
+      font-size: 20px;
+      background-color: #556B2F;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .personagens-salvos {
+      margin-top: 40px;
+      padding: 20px;
+      background: #1e1e1e;
+      border: 1px solid #556B2F;
+    }
+    .personagem {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #556B2F;
+    }
+    .icon-btn {
+      cursor: pointer;
+      font-size: 18px;
+      color: #ffffff;
+      float: right;
+    }
+    .coracoes {
+      font-size: 24px;
+      margin-top: 1px;
+    }
+    .vida-controls {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .vida-controls input {
+      width: 60px;
+      text-align: center;
+    }
+    p {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Criador de Personagem</h1>
+    <form id="formPersonagem">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" required>
+
+      <label for="conceito">Conceito</label>
+      <input type="text" id="conceito" required>
+
+      <label for="historia">História</label>
+      <textarea id="historia" rows="4" required></textarea>
+
+      <label for="itens">3 Itens (separados por vírgula)</label>
+      <input type="text" id="itens" required>
+
+      <button type="submit">Salvar Personagem</button>
+    </form>
+
+    <div class="personagens-salvos" id="personagensSalvos">
+      <h2>Personagens Salvos</h2>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('formPersonagem');
+    const lista = document.getElementById('personagensSalvos');
+
+    function calcularCoracoes(pontos) {
+      const coracoes = Math.max(0, 3 - Math.floor(pontos / 4));
+      return '●'.repeat(coracoes) + '○'.repeat(3 - coracoes);
+    }
+
+    function gerarFicha(personagem) {
+      return `FICHA DE PERSONAGEM\nSistema 2d6 - Estilo Pós-Apocalíptico\n\nNome do Personagem: ${personagem.nome}\nConceito: ${personagem.conceito}\n\nHistória do Personagem:\n${personagem.historia}\n\nEstado de Infecção: ${personagem.infeccao || 'Estágio 1'}\n\nItens:\n1. ${personagem.itens.split(',')[0] || ''}\n2. ${personagem.itens.split(',')[1] || ''}\n3. ${personagem.itens.split(',')[2] || ''}`;
+    }
+
+    function baixarFicha(personagem) {
+      const ficha = gerarFicha(personagem);
+      const blob = new Blob([ficha], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `ficha_${personagem.nome}.txt`;
+      link.click();
+    }
+
+    function removerPersonagem(index) {
+      const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
+      personagens.splice(index, 1);
+      localStorage.setItem('personagens', JSON.stringify(personagens));
+      renderizarPersonagens();
+    }
+
+    function atualizarVida(index, novaVida) {
+      const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
+      personagens[index].vida = parseInt(novaVida);
+      localStorage.setItem('personagens', JSON.stringify(personagens));
+      renderizarPersonagens();
+    }
+
+    function atualizarInfeccao(index, novoEstagio) {
+      const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
+      personagens[index].infeccao = novoEstagio;
+      localStorage.setItem('personagens', JSON.stringify(personagens));
+    }
+
+    function renderizarPersonagens() {
+      const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
+      lista.innerHTML = '<h2>Personagens Salvos</h2>';
+      personagens.forEach((p, i) => {
+        if (!p.vida) p.vida = 0;
+        if (!p.infeccao) p.infeccao = 'Estágio 1';
+        const div = document.createElement('div');
+        div.classList.add('personagem');
+        div.innerHTML = `
+          <strong>${p.nome}</strong> - <em>${p.conceito}</em>
+          <br>
+          <p><strong>História:</strong> ${p.historia}</p>
+          <p><strong>Itens:</strong> ${p.itens}</p>
+          <div class="vida-controls">
+            <p>Vida:</p>
+            <input type="number" min="0" max="12" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
+            <span class="coracoes">${calcularCoracoes(p.vida)}</span>
+          </div>
+          <label>Infecção:</label>
+          <select onchange="atualizarInfeccao(${i}, this.value)">
+            <option ${p.infeccao === 'Estágio 1' ? 'selected' : ''}>Estágio 1</option>
+            <option ${p.infeccao === 'Estágio 2' ? 'selected' : ''}>Estágio 2</option>
+            <option ${p.infeccao === 'Estágio 3' ? 'selected' : ''}>Estágio 3</option>
+            <option ${p.infeccao === 'Estágio 4' ? 'selected' : ''}>Estágio 4</option>
+          </select>
+          <br><br>
+          <button onclick="removerPersonagem(${i})">Remover Personagem</button>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const personagem = {
+        nome: document.getElementById('nome').value,
+        conceito: document.getElementById('conceito').value,
+        historia: document.getElementById('historia').value,
+        itens: document.getElementById('itens').value,
+        vida: 0,
+        infeccao: 'Estágio 1'
+      };
+      const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
+      personagens.push(personagem);
+      localStorage.setItem('personagens', JSON.stringify(personagens));
+      form.reset();
+      renderizarPersonagens();
+    });
+
+    renderizarPersonagens();
+  </script>
+</body>
+</html>
