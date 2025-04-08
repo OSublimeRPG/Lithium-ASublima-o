@@ -199,6 +199,15 @@
       form.reset();
       renderizarPersonagens();
     });
+const shareButton = document.createElement('button');
+shareButton.innerText = 'Compartilhar Ficha';
+shareButton.onclick = () => {
+  const ficha = gerarFicha(p);
+  navigator.clipboard.writeText(ficha)
+    .then(() => alert('Ficha copiada para a área de transferência. Compartilhe onde quiser!'))
+    .catch(() => alert('Houve um problema ao copiar a ficha.'));
+};
+div.appendChild(shareButton);
 
     renderizarPersonagens();
   </script>
