@@ -149,22 +149,27 @@
 </head>
 <body>
   <div class="container">
-<h1>Criador de Personagem</h1>
+    <h1>Criador de Personagem</h1>
+    <form id="formPersonagem">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" required>
 
-<form id="formPersonagem">
-  <label for="nome">Nome</label>
-  <input type="text" id="nome" required>
+      <label for="conceito">Conceito</label>
+      <input type="text" id="conceito" required>
 
-  <label for="conceito">Conceito</label>
-  <input type="text" id="conceito" required>
+      <label for="classe">Classe</label>
+      <select id="classe" required>
+        <option value="desacreditado">Desacreditado</option>
+        <option value="acreditado">Acreditado</option>
+      </select>
 
-  <label for="historia">História</label>
-  <textarea id="historia" rows="4" required></textarea>
+      <label for="historia">História</label>
+      <textarea id="historia" rows="4" required></textarea>
 
-  <label for="itens">3 Itens (separados por vírgula)</label>
-  <input type="text" id="itens" required>
+      <label for="itens">3 Itens (separados por vírgula)</label>
+      <input type="text" id="itens" required>
 
-  <button type="submit">Salvar Personagem</button>
+      <button type="submit">Salvar Personagem</button>
     </form>
 
     <div class="personagens-salvos" id="personagensSalvos">
@@ -182,9 +187,15 @@
   const form = document.getElementById('formPersonagem');
   const lista = document.getElementById('personagensSalvos');
 
-  function calcularCoracoes(pontos) {
-    const coracoes = Math.max(0, 3 - Math.floor(pontos / 4));
-    return '●'.repeat(coracoes) + '○'.repeat(3 - coracoes);
+  function estadoDeSaude(dano, vidaMax) {
+    const restante = vidaMax - dano;
+    const porcentagem = (restante / vidaMax) * 100;
+
+    if (porcentagem === 100) return 'Saudável';
+    if (porcentagem >= 60) return 'Cansado';
+    if (porcentagem >= 20) return 'Ferido';
+    if (porcentagem > 0) return 'À beira do colapso';
+    return 'Inconsciente';
   }
 
   function gerarFicha(personagem) {
@@ -258,7 +269,7 @@
 
   function renderizarPersonagens() {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
-    lista.innerHTML = `
+    lista.innerHTML = ` 
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="margin: 0;">Personagens Salvos</h2>
         <div style="display: flex; align-items: center; gap: 5px;">
@@ -271,6 +282,7 @@
     personagens.forEach((p, i) => {
       if (!p.vida) p.vida = 0;
       if (!p.infeccao) p.infeccao = 'Estágio 1';
+      const vidaMax = p.classe === 'desacreditado' ? 20 : 10;
       const div = document.createElement('div');
       div.classList.add('personagem');
       div.innerHTML = `
@@ -278,10 +290,11 @@
         <br>
         <p><strong>História:</strong> ${p.historia}</p>
         <p><strong>Itens:</strong> ${p.itens}</p>
+        <p><strong>Classe:</strong> ${p.classe === 'desacreditado' ? 'Desacreditado' : 'Acreditado'}</p>
+        <p><strong>Vida:</strong> ${vidaMax - p.vida} / ${vidaMax} (${estadoDeSaude(p.vida, vidaMax)})</p>
         <div class="vida-controls">
           <p>Pontos de Dano:</p>
-          <input type="number" min="0" max="12" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
-          <span class="coracoes">${calcularCoracoes(p.vida)}</span>
+          <input type="number" min="0" max="${vidaMax}" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
         </div>
         <label>Infecção:</label>
         <select onchange="atualizarInfeccao(${i}, this.value)">
@@ -308,12 +321,16 @@
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const classe = document.getElementById('classe').value;
+    const vidaMax = classe === 'desacreditado' ? 20 : 10;
+
     const personagem = {
       nome: document.getElementById('nome').value,
       conceito: document.getElementById('conceito').value,
+      classe: classe,
       historia: document.getElementById('historia').value,
       itens: document.getElementById('itens').value,
-      vida: 0,
+      vida: 0, // dano
       infeccao: 'Estágio 1'
     };
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
