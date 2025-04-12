@@ -207,16 +207,6 @@
     localStorage.setItem('personagens', JSON.stringify(personagens));
   }
 
-  function getEstadoMental(infeccao) {
-    switch (infeccao) {
-      case 'Estágio 1': return 'Lúcido';
-      case 'Estágio 2': return 'Instável';
-      case 'Estágio 3': return 'Aflito';
-      case 'Estágio 4': return 'Delirante';
-      default: return 'Desconhecido';
-    }
-  }
-
   function renderizarPersonagens() {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
     lista.innerHTML = '<h2>Personagens Salvos</h2>';
@@ -234,7 +224,6 @@
           <p>Pontos de Dano:</p>
           <input type="number" min="0" max="12" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
           <span class="coracoes">${calcularCoracoes(p.vida)}</span>
-          <p><strong>Estado Mental:</strong> ${getEstadoMental(p.infeccao)}</p>
         </div>
         <label>Infecção:</label>
         <select onchange="atualizarInfeccao(${i}, this.value)">
