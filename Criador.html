@@ -153,9 +153,16 @@
     </form>
 
     <div class="personagens-salvos" id="personagensSalvos">
-      <h2>Personagens Salvos</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0;">Personagens Salvos</h2>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <input type="text" id="inputLinkPersonagem" placeholder="Cole o link aqui" style="padding: 5px; font-size: 14px; width: 200px;">
+          <button id="botaoCarregarLink" style="padding: 5px; cursor: pointer;">🔍</button>
+        </div>
+      </div>
     </div>
   </div>
+
 <script>
   const form = document.getElementById('formPersonagem');
   const lista = document.getElementById('personagensSalvos');
@@ -187,6 +194,33 @@
       .catch(() => alert("Não foi possível copiar o link."));
   }
 
+  function carregarPersonagemPorLink() {
+    const input = document.getElementById('inputLinkPersonagem');
+    const link = input.value.trim();
+    
+    if (!link) {
+      alert("Por favor, cole um link válido.");
+      return;
+    }
+
+    try {
+      const urlParams = new URL(link).searchParams;
+      const data = urlParams.get('data');
+      if (data) {
+        const personagem = JSON.parse(atob(decodeURIComponent(data)));
+        const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
+        personagens.push(personagem);
+        localStorage.setItem('personagens', JSON.stringify(personagens));
+        alert("Personagem carregado com sucesso!");
+        renderizarPersonagens();
+      } else {
+        alert("O link fornecido não contém dados de personagem.");
+      }
+    } catch (e) {
+      alert("Erro ao processar o link. Certifique-se de que é um link válido.");
+    }
+  }
+
   function removerPersonagem(index) {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
     personagens.splice(index, 1);
@@ -209,7 +243,16 @@
 
   function renderizarPersonagens() {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
-    lista.innerHTML = '<h2>Personagens Salvos</h2>';
+    lista.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0;">Personagens Salvos</h2>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <input type="text" id="inputLinkPersonagem" placeholder="Cole o link aqui" style="padding: 5px; font-size: 14px; width: 200px;">
+          <button id="botaoCarregarLink" style="padding: 5px; cursor: pointer;">🔍</button>
+        </div>
+      </div>
+    `;
+
     personagens.forEach((p, i) => {
       if (!p.vida) p.vida = 0;
       if (!p.infeccao) p.infeccao = 'Estágio 1';
@@ -243,6 +286,9 @@
 
       lista.appendChild(div);
     });
+
+    // Reatribuir evento ao botão após re-renderização
+    document.getElementById('botaoCarregarLink').addEventListener('click', carregarPersonagemPorLink);
   }
 
   form.addEventListener('submit', (e) => {
@@ -278,6 +324,7 @@
     }
   }
 
+  document.getElementById('botaoCarregarLink').addEventListener('click', carregarPersonagemPorLink);
   importarViaURL();
   renderizarPersonagens();
 </script>
