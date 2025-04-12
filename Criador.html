@@ -19,8 +19,11 @@
 
   .container {
     max-width: 700px;
-    margin: auto;
-    padding: 40px 20px 100px; /* padding inferior maior para descer os personagens */
+    margin: 60px auto 40px auto;
+    padding: 40px 20px;
+    background-color: rgba(70, 50, 40, 0.7);
+    box-shadow: 0 0 10px #00000055;
+    border: none;
   }
 
   h1 {
@@ -59,7 +62,7 @@
   }
 
   .personagens-salvos {
-    margin-top: 60px;
+    margin-top: 80px;
     padding: 20px;
     background: #3e2e28;
     border: 1px solid #a67c52;
@@ -93,7 +96,7 @@
 
   @media (max-width: 600px) {
     .container {
-      padding: 20px 10px 80px;
+      padding: 20px 10px;
     }
 
     h1 {
@@ -194,23 +197,34 @@
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
     personagens[index].infeccao = novoEstagio;
     localStorage.setItem('personagens', JSON.stringify(personagens));
+    renderizarPersonagens();
   }
 
   function renderizarPersonagens() {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
     lista.innerHTML = '<h2>Personagens Salvos</h2>';
+
+    const estadosMentais = {
+      "Estágio 1": "Racional e calmo",
+      "Estágio 2": "Ansioso e desconfiado",
+      "Estágio 3": "Instável e agressivo",
+      "Estágio 4": "Delirante e incontrolável"
+    };
+
     personagens.forEach((p, i) => {
       if (!p.vida) p.vida = 0;
       if (!p.infeccao) p.infeccao = 'Estágio 1';
+
       const div = document.createElement('div');
       div.classList.add('personagem');
+
       div.innerHTML = `
         <strong>${p.nome}</strong> - <em>${p.conceito}</em>
         <br>
         <p><strong>História:</strong> ${p.historia}</p>
         <p><strong>Itens:</strong> ${p.itens}</p>
         <div class="vida-controls">
-          <p>Vida:</p>
+          <p>Pontos de Dano:</p>
           <input type="number" min="0" max="12" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
           <span class="coracoes">${calcularCoracoes(p.vida)}</span>
         </div>
@@ -221,7 +235,8 @@
           <option ${p.infeccao === 'Estágio 3' ? 'selected' : ''}>Estágio 3</option>
           <option ${p.infeccao === 'Estágio 4' ? 'selected' : ''}>Estágio 4</option>
         </select>
-        <br><br>
+        <p><strong>Estado Mental:</strong> ${estadosMentais[p.infeccao]}</p>
+        <br>
         <button onclick="removerPersonagem(${i})">Remover Personagem</button>
       `;
 
@@ -234,7 +249,7 @@
           .catch(() => alert('Houve um problema ao copiar a ficha.'));
       };
       div.appendChild(shareButton);
-      
+
       lista.appendChild(div);
     });
   }
