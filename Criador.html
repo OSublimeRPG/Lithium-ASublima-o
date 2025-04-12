@@ -6,41 +6,32 @@
   <title>Sublimação</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Marcellus+SC:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Libre+Baskerville&display=swap');
 
   body {
     background-color: #2b1f1a;
     background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
     color: #f0e9df;
-    font-family: 'Marcellus SC', serif;
+    font-family: 'Libre Baskerville', serif;
     margin: 0;
     padding: 0;
-    transform: translateY(-11px);
   }
 
   .container {
-    background-color: rgba(47, 29, 28, 0.7);
-    transform: translateY(-64px);
-    width: 700px;
-    max-width: 90%;
+    max-width: 700px;
     margin: 60px auto 40px auto;
     padding: 40px 20px;
+    background-color: rgba(70, 50, 40, 0.7);
     box-shadow: 0 0 10px #00000055;
     border: none;
   }
 
   h1 {
-    font-family: 'Marcellus SC', serif;
-    color: #ab8c6d;
+    color: #e5d7c4;
     text-align: center;
     border-bottom: 2px solid #a67c52;
     padding-bottom: 10px;
     margin-bottom: 30px;
-    line-height: 37.9px;
-    letter-spacing: 3.5px;
-    word-spacing: -5px;
-    text-transform: capitalize;
   }
 
   label {
@@ -76,7 +67,6 @@
     background: #3e2e28;
     border: 1px solid #a67c52;
     border-radius: 3px;
-    transform: translateY(-64px);
   }
 
   .personagem {
@@ -88,7 +78,7 @@
   .vida-controls {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
   }
 
   .vida-controls input {
@@ -102,10 +92,6 @@
 
   p {
     color: #f0e9df;
-  }
-
-  #botaoCarregarLink {
-    transform: translateY(-11px);
   }
 
   @media (max-width: 600px) {
@@ -157,12 +143,6 @@
       <label for="conceito">Conceito</label>
       <input type="text" id="conceito" required>
 
-      <label for="classe">Classe</label>
-      <select id="classe" required>
-        <option value="desacreditado">Desacreditado</option>
-        <option value="acreditado">Acreditado</option>
-      </select>
-
       <label for="historia">História</label>
       <textarea id="historia" rows="4" required></textarea>
 
@@ -187,15 +167,9 @@
   const form = document.getElementById('formPersonagem');
   const lista = document.getElementById('personagensSalvos');
 
-  function estadoDeSaude(dano, vidaMax) {
-    const restante = vidaMax - dano;
-    const porcentagem = (restante / vidaMax) * 100;
-
-    if (porcentagem === 100) return 'Saudável';
-    if (porcentagem >= 60) return 'Cansado';
-    if (porcentagem >= 20) return 'Ferido';
-    if (porcentagem > 0) return 'À beira do colapso';
-    return 'Inconsciente';
+  function calcularCoracoes(pontos) {
+    const coracoes = Math.max(0, 3 - Math.floor(pontos / 4));
+    return '●'.repeat(coracoes) + '○'.repeat(3 - coracoes);
   }
 
   function gerarFicha(personagem) {
@@ -269,7 +243,7 @@
 
   function renderizarPersonagens() {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
-    lista.innerHTML = ` 
+    lista.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="margin: 0;">Personagens Salvos</h2>
         <div style="display: flex; align-items: center; gap: 5px;">
@@ -282,7 +256,6 @@
     personagens.forEach((p, i) => {
       if (!p.vida) p.vida = 0;
       if (!p.infeccao) p.infeccao = 'Estágio 1';
-      const vidaMax = p.classe === 'desacreditado' ? 20 : 10;
       const div = document.createElement('div');
       div.classList.add('personagem');
       div.innerHTML = `
@@ -290,12 +263,10 @@
         <br>
         <p><strong>História:</strong> ${p.historia}</p>
         <p><strong>Itens:</strong> ${p.itens}</p>
-        <p><strong>Classe:</strong> ${p.classe === 'desacreditado' ? 'Desacreditado' : 'Acreditado'}</p>
-        <p><strong>Vida:</strong> ${vidaMax - p.vida} / ${vidaMax} (${estadoDeSaude(p.vida, vidaMax)})</p>
         <div class="vida-controls">
           <p>Pontos de Dano:</p>
-          <input type="number" min="0" max="${vidaMax}" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
-          <button onclick="atualizarVida(${i}, 0)">Restaurar Vida</button>
+          <input type="number" min="0" max="12" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
+          <span class="coracoes">${calcularCoracoes(p.vida)}</span>
         </div>
         <label>Infecção:</label>
         <select onchange="atualizarInfeccao(${i}, this.value)">
@@ -322,16 +293,12 @@
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const classe = document.getElementById('classe').value;
-    const vidaMax = classe === 'desacreditado' ? 20 : 10;
-
     const personagem = {
       nome: document.getElementById('nome').value,
       conceito: document.getElementById('conceito').value,
-      classe: classe,
       historia: document.getElementById('historia').value,
       itens: document.getElementById('itens').value,
-      vida: 0, // dano
+      vida: 0,
       infeccao: 'Estágio 1'
     };
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
