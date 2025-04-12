@@ -6,7 +6,14 @@
   <title>Sublimação</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
+  /* Import Google Fonts */
+  @import url("//fonts.googleapis.com/css2?family=Marcellus+SC:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Libre+Baskerville&display=swap');
+
+  /* Ajustes de layout adicionais */
+  #botaoCarregarLink {
+    transform: translateX(0px) translateY(-11px);
+  }
 
   body {
     background-color: #2b1f1a;
@@ -15,19 +22,40 @@
     font-family: 'Libre Baskerville', serif;
     margin: 0;
     padding: 0;
+    transform: translateX(0px) translateY(-11px);
+  }
+
+  #personagensSalvos {
+    transform: translateX(0px) translateY(-64px);
+  }
+
+  #historia {
+    width: 96% !important;
+  }
+
+  #itens {
+    width: 98% !important;
   }
 
   .container {
     max-width: 700px;
     margin: 60px auto 40px auto;
     padding: 40px 20px;
-    background-color: rgba(70, 50, 40, 0.7);
+    background-color: rgba(47, 29, 28, 0.7);
     box-shadow: 0 0 10px #00000055;
     border: none;
+    transform: translateX(0px) translateY(-64px);
   }
 
   h1 {
-    color: #e5d7c4;
+    font-family: 'Marcellus SC', serif;
+    color: #ab8c6d;
+    line-height: 37.9px;
+    font-style: normal;
+    text-transform: capitalize;
+    letter-spacing: 3.5px;
+    word-spacing: -5px;
+    column-count: 1;
     text-align: center;
     border-bottom: 2px solid #a67c52;
     padding-bottom: 10px;
@@ -92,6 +120,16 @@
 
   p {
     color: #f0e9df;
+  }
+
+  @media (min-width: 601px) {
+    #itens, #conceito {
+      padding-right: 0px;
+    }
+
+    .container h1 {
+      font-size: 41px;
+    }
   }
 
   @media (max-width: 600px) {
