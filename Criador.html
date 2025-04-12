@@ -88,7 +88,7 @@
   .vida-controls {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
   }
 
   .vida-controls input {
@@ -295,6 +295,7 @@
         <div class="vida-controls">
           <p>Pontos de Dano:</p>
           <input type="number" min="0" max="${vidaMax}" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
+          <button onclick="atualizarVida(${i}, 0)">Restaurar Vida</button>
         </div>
         <label>Infecção:</label>
         <select onchange="atualizarInfeccao(${i}, this.value)">
