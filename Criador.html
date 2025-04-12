@@ -7,96 +7,93 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Libre+Baskerville&display=swap');
-   
- body {
-      background-color: #2b1f1a;
-      background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
-      color: #f0e9df;
-      font-family: 'Libre Baskerville', serif;
-      margin: 0;
-      padding: 0;
-    }
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      padding: 40px 20px;
-      background-color: rgba(70, 50, 40, 0.7);
-      box-shadow: 0 0 10px #00000055;
-      border-left: 5px solid #a67c52;
-    }
+  body {
+    background-color: #2b1f1a;
+    background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+    color: #f0e9df;
+    font-family: 'Libre Baskerville', serif;
+    margin: 0;
+    padding: 0;
+  }
 
-    h1 {
-      color: #e5d7c4;
-      text-align: center;
-      border-bottom: 2px solid #a67c52;
-      padding-bottom: 10px;
-      margin-bottom: 30px;
-    }
+  .container {
+    max-width: 700px;
+    margin: auto;
+    padding: 40px 20px 100px; /* padding inferior maior para descer os personagens */
+  }
 
-    label {
-      display: block;
-      margin-top: 20px;
-      font-size: 20px;
-    }
+  h1 {
+    color: #e5d7c4;
+    text-align: center;
+    border-bottom: 2px solid #a67c52;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
 
-    input, textarea, select {
-      width: 100%;
-      padding: 6px;
-      font-size: 18px;
-      background: #3e2e28;
-      border: 1px solid #a67c52;
-      border-radius: 3px;
-      color: #f0e9df;
-    }
+  label {
+    display: block;
+    margin-top: 20px;
+    font-size: 20px;
+  }
 
-    button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 20px;
-      background-color: #a67c52;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
+  input, textarea, select {
+    width: 100%;
+    padding: 6px;
+    font-size: 18px;
+    background: #3e2e28;
+    border: 1px solid #a67c52;
+    border-radius: 3px;
+    color: #f0e9df;
+  }
 
-    .personagens-salvos {
-      margin-top: 40px;
-      padding: 20px;
-      background: #3e2e28;
-      border: 1px solid #a67c52;
-      border-radius: 3px;
-    }
+  button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    font-size: 20px;
+    background-color: #a67c52;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
 
-    .personagem {
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px dashed #a67c52;
-    }
+  .personagens-salvos {
+    margin-top: 60px;
+    padding: 20px;
+    background: #3e2e28;
+    border: 1px solid #a67c52;
+    border-radius: 3px;
+  }
 
-    .vida-controls {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+  .personagem {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #a67c52;
+  }
 
-    .vida-controls input {
-      width: 60px;
-      text-align: center;
-    }
+  .vida-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-    .coracoes {
-      font-size: 24px;
-    }
+  .vida-controls input {
+    width: 60px;
+    text-align: center;
+  }
 
-    p {
-      color: #f0e9df;
-    }
+  .coracoes {
+    font-size: 24px;
+  }
+
+  p {
+    color: #f0e9df;
+  }
 
   @media (max-width: 600px) {
     .container {
-      padding: 20px 10px;
+      padding: 20px 10px 80px;
     }
 
     h1 {
@@ -130,6 +127,7 @@
     .coracoes {
       font-size: 20px;
     }
+  }
   </style>
 </head>
 <body>
