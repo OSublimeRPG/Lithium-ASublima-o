@@ -156,7 +156,6 @@
       <h2>Personagens Salvos</h2>
     </div>
   </div>
-
 <script>
   const form = document.getElementById('formPersonagem');
   const lista = document.getElementById('personagensSalvos');
@@ -179,6 +178,15 @@
     link.click();
   }
 
+  function gerarLinkCompartilhamento(personagem) {
+    const json = JSON.stringify(personagem);
+    const encoded = encodeURIComponent(btoa(json));
+    const url = `${location.origin}${location.pathname}?data=${encoded}`;
+    navigator.clipboard.writeText(url)
+      .then(() => alert("Link copiado para a área de transferência!"))
+      .catch(() => alert("Não foi possível copiar o link."));
+  }
+
   function removerPersonagem(index) {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
     personagens.splice(index, 1);
@@ -197,27 +205,26 @@
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
     personagens[index].infeccao = novoEstagio;
     localStorage.setItem('personagens', JSON.stringify(personagens));
-    renderizarPersonagens();
+  }
+
+  function getEstadoMental(infeccao) {
+    switch (infeccao) {
+      case 'Estágio 1': return 'Lúcido';
+      case 'Estágio 2': return 'Instável';
+      case 'Estágio 3': return 'Aflito';
+      case 'Estágio 4': return 'Delirante';
+      default: return 'Desconhecido';
+    }
   }
 
   function renderizarPersonagens() {
     const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
     lista.innerHTML = '<h2>Personagens Salvos</h2>';
-
-    const estadosMentais = {
-      "Estágio 1": "Racional e calmo",
-      "Estágio 2": "Ansioso e desconfiado",
-      "Estágio 3": "Instável e agressivo",
-      "Estágio 4": "Delirante e incontrolável"
-    };
-
     personagens.forEach((p, i) => {
       if (!p.vida) p.vida = 0;
       if (!p.infeccao) p.infeccao = 'Estágio 1';
-
       const div = document.createElement('div');
       div.classList.add('personagem');
-
       div.innerHTML = `
         <strong>${p.nome}</strong> - <em>${p.conceito}</em>
         <br>
@@ -227,6 +234,7 @@
           <p>Pontos de Dano:</p>
           <input type="number" min="0" max="12" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
           <span class="coracoes">${calcularCoracoes(p.vida)}</span>
+          <p><strong>Estado Mental:</strong> ${getEstadoMental(p.infeccao)}</p>
         </div>
         <label>Infecção:</label>
         <select onchange="atualizarInfeccao(${i}, this.value)">
@@ -235,8 +243,7 @@
           <option ${p.infeccao === 'Estágio 3' ? 'selected' : ''}>Estágio 3</option>
           <option ${p.infeccao === 'Estágio 4' ? 'selected' : ''}>Estágio 4</option>
         </select>
-        <p><strong>Estado Mental:</strong> ${estadosMentais[p.infeccao]}</p>
-        <br>
+        <br><br>
         <button onclick="removerPersonagem(${i})">Remover Personagem</button>
       `;
 
@@ -249,6 +256,11 @@
           .catch(() => alert('Houve um problema ao copiar a ficha.'));
       };
       div.appendChild(shareButton);
+
+      const linkButton = document.createElement('button');
+      linkButton.innerText = 'Compartilhar com Link';
+      linkButton.onclick = () => gerarLinkCompartilhamento(p);
+      div.appendChild(linkButton);
 
       lista.appendChild(div);
     });
@@ -271,6 +283,23 @@
     renderizarPersonagens();
   });
 
+  function importarViaURL() {
+    const params = new URLSearchParams(window.location.search);
+    const data = params.get('data');
+    if (data) {
+      try {
+        const json = atob(decodeURIComponent(data));
+        const personagem = JSON.parse(json);
+        const personagens = JSON.parse(localStorage.getItem('personagens')) || [];
+        personagens.push(personagem);
+        localStorage.setItem('personagens', JSON.stringify(personagens));
+      } catch (e) {
+        alert("Erro ao importar personagem via link.");
+      }
+    }
+  }
+
+  importarViaURL();
   renderizarPersonagens();
 </script>
 </body>
