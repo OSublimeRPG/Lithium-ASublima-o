@@ -247,16 +247,6 @@
         <button onclick="removerPersonagem(${i})">Remover Personagem</button>
       `;
 
-      const shareButton = document.createElement('button');
-      shareButton.innerText = 'Compartilhar Ficha';
-      shareButton.onclick = () => {
-        const ficha = gerarFicha(p);
-        navigator.clipboard.writeText(ficha)
-          .then(() => alert('Ficha copiada para a área de transferência. Compartilhe onde quiser!'))
-          .catch(() => alert('Houve um problema ao copiar a ficha.'));
-      };
-      div.appendChild(shareButton);
-
       const linkButton = document.createElement('button');
       linkButton.innerText = 'Compartilhar com Link';
       linkButton.onclick = () => gerarLinkCompartilhamento(p);
