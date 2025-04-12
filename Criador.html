@@ -280,8 +280,6 @@
         <p><strong>Classe:</strong> ${p.classe === 'desacreditado' ? 'Desacreditado' : 'Acreditado'}</p>
         <p><strong>Vida:</strong> ${vidaMax - p.vida} / ${vidaMax} (${estadoDeSaude(p.vida, vidaMax)})</p>
         <div class="vida-controls">
-          <p>Pontos de Dano:</p>
-          <input type="number" min="0" max="${vidaMax}" value="${p.vida}" onchange="atualizarVida(${i}, this.value)">
         </div>
         <label>Infecção:</label>
         <select onchange="atualizarInfeccao(${i}, this.value)">
