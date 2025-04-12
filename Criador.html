@@ -8,80 +8,89 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
     body {
-      background-color: #121212;
-      color: #ffffff;
+      background-color: #2b1f1a;
+      background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+      color: #f0e9df;
       font-family: 'VT323', monospace;
       margin: 0;
       padding: 0;
-      background-image: url('https://www.transparenttextures.com/patterns/dark-exa.png');
     }
+
     .container {
       max-width: 700px;
       margin: auto;
       padding: 40px 20px;
+      background-color: rgba(70, 50, 40, 0.7);
+      box-shadow: 0 0 10px #00000055;
+      border-left: 5px solid #a67c52;
     }
+
     h1 {
-      color: #556B2F;
+      color: #e5d7c4;
       text-align: center;
-      border-bottom: 2px solid #556B2F;
+      border-bottom: 2px solid #a67c52;
       padding-bottom: 10px;
       margin-bottom: 30px;
     }
+
     label {
       display: block;
       margin-top: 20px;
       font-size: 20px;
     }
-    input, textarea {
+
+    input, textarea, select {
       width: 100%;
       padding: 6px;
       font-size: 18px;
-      background: #1e1e1e;
-      border: 1px solid #556B2F;
-      border-radius: 1px;
-      color: #f0f0f0;
+      background: #3e2e28;
+      border: 1px solid #a67c52;
+      border-radius: 3px;
+      color: #f0e9df;
     }
+
     button {
-      margin-top: 30px;
+      margin-top: 20px;
       padding: 12px 20px;
       font-size: 20px;
-      background-color: #556B2F;
+      background-color: #a67c52;
       color: #fff;
       border: none;
+      border-radius: 3px;
       cursor: pointer;
     }
+
     .personagens-salvos {
       margin-top: 40px;
       padding: 20px;
-      background: #1e1e1e;
-      border: 1px solid #556B2F;
+      background: #3e2e28;
+      border: 1px solid #a67c52;
+      border-radius: 3px;
     }
+
     .personagem {
       margin-bottom: 20px;
       padding-bottom: 10px;
-      border-bottom: 1px dashed #556B2F;
+      border-bottom: 1px dashed #a67c52;
     }
-    .icon-btn {
-      cursor: pointer;
-      font-size: 18px;
-      color: #ffffff;
-      float: right;
-    }
-    .coracoes {
-      font-size: 24px;
-      margin-top: 1px;
-    }
+
     .vida-controls {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 5px;
     }
+
     .vida-controls input {
       width: 60px;
       text-align: center;
     }
+
+    .coracoes {
+      font-size: 24px;
+    }
+
     p {
-      color: #ffffff;
+      color: #f0e9df;
     }
   </style>
 </head>
@@ -108,6 +117,7 @@
       <h2>Personagens Salvos</h2>
     </div>
   </div>
+
 <script>
   const form = document.getElementById('formPersonagem');
   const lista = document.getElementById('personagensSalvos');
@@ -212,6 +222,5 @@
 
   renderizarPersonagens();
 </script>
-  
 </body>
 </html>
